@@ -29,36 +29,24 @@ public class Main {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 Coor coor = new Coor(i, j);
+
                 if (coor.isNew()) { // 방문 안한 그림 발견하는 경우
-                    vis[i][j] = true;
                     queue.add(coor);
                     count++;
                     int area = 0;
 
                     while (!queue.isEmpty()) { // 전체 그림 탐색
                         coor = queue.poll();
+                        if (!coor.isValid(n, m) || !coor.isNew()) {
+                            continue;
+                        }
+                        vis[coor.x][coor.y] = true;
                         area++;
 
-                        Coor nextCoor = new Coor(coor.x - 1, coor.y);
-                        if (nextCoor.isValid(n, m) && nextCoor.isNew()) {
-                            vis[nextCoor.x][nextCoor.y] = true;
-                            queue.add(nextCoor);
-                        }
-                        nextCoor = new Coor(coor.x + 1, coor.y);
-                        if (nextCoor.isValid(n, m) && nextCoor.isNew()) {
-                            vis[nextCoor.x][nextCoor.y] = true;
-                            queue.add(nextCoor);
-                        }
-                        nextCoor = new Coor(coor.x, coor.y - 1);
-                        if (nextCoor.isValid(n, m) && nextCoor.isNew()) {
-                            vis[nextCoor.x][nextCoor.y] = true;
-                            queue.add(nextCoor);
-                        }
-                        nextCoor = new Coor(coor.x, coor.y + 1);
-                        if (nextCoor.isValid(n, m) && nextCoor.isNew()) {
-                            vis[nextCoor.x][nextCoor.y] = true;
-                            queue.add(nextCoor);
-                        }
+                        queue.add(new Coor(coor.x - 1, coor.y));
+                        queue.add(new Coor(coor.x + 1, coor.y));
+                        queue.add(new Coor(coor.x, coor.y - 1));
+                        queue.add(new Coor(coor.x, coor.y + 1));
                     }
                     if (area > maxArea) {
                         maxArea = area;
