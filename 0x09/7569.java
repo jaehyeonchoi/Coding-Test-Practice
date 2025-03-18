@@ -2,11 +2,12 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int M;
-    static int N;
-    static int H;
+    static int M, N, H;
     static int[][][] arr;
     static boolean[][][] vis;
+    static int[] dx = {1, -1, 0, 0, 0, 0};
+    static int[] dy = {0, 0, 1, -1, 0, 0};
+    static int[] dz = {0, 0, 0, 0, 1, -1};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -25,7 +26,8 @@ public class Main {
                 for (int k = 0; k < M; k++) {
                     arr[i][j][k] = Integer.parseInt(st.nextToken());
                     if (arr[i][j][k] == 1) {
-                        queue.add(new Coor(i, j, k, 1));
+                        queue.add(new Coor(i, j, k));
+                        vis[i][j][k] = true;
                     }
                 }
             }
@@ -33,23 +35,22 @@ public class Main {
 
         while (!queue.isEmpty()) {
             Coor coor = queue.poll();
-            if (!coor.isValid() || !coor.isNew()) {
-                continue;
-            }
             int x = coor.x;
             int y = coor.y;
             int z = coor.z;
-            int dist = coor.dist;
 
-            arr[x][y][z] = dist;
-            vis[x][y][z] = true;
+            for (int i = 0; i < 6; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                int nz = z + dz[i];
+                Coor nextCoor = new Coor(nx, ny, nz);
 
-            queue.add(new Coor(x - 1, y, z, dist + 1));
-            queue.add(new Coor(x + 1, y, z, dist + 1));
-            queue.add(new Coor(x, y - 1, z, dist + 1));
-            queue.add(new Coor(x, y + 1, z, dist + 1));
-            queue.add(new Coor(x, y, z - 1, dist + 1));
-            queue.add(new Coor(x, y, z + 1, dist + 1));
+                if (nextCoor.isValid() && nextCoor.isNew()) {
+                    queue.add(nextCoor);
+                    vis[nx][ny][nz] = true;
+                    arr[nx][ny][nz] = arr[x][y][z] + 1;
+                }
+            }
         }
 
         int max = 1;
@@ -73,13 +74,11 @@ public class Main {
         private final int x;
         private final int y;
         private final int z;
-        private final int dist;
 
-        public Coor(int x, int y, int z, int dist) {
+        public Coor(int x, int y, int z) {
             this.x = x;
             this.y = y;
             this.z = z;
-            this.dist = dist;
         }
 
         public boolean isValid() {
