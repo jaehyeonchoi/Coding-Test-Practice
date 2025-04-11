@@ -7,7 +7,6 @@ public class Main {
     static boolean[] used;
     static int[] input;
     static StringBuilder sb;
-    static HashSet<String> set;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,7 +16,6 @@ public class Main {
         arr = new int[M];
         used = new boolean[N];
         input = new int[N];
-        set = new HashSet<>();
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
@@ -32,23 +30,19 @@ public class Main {
 
     public static void recursive(int k) {
         if (k == M) { // M개의 숫자를 모두 선택한 경우
-            StringBuilder tempSb = new StringBuilder();
             for (int i : arr) {
-                tempSb.append(input[i]).append(" ");
+                sb.append(i).append(" ");
             }
-            tempSb.append("\n");
-
-            String tempStr = tempSb.toString();
-            if (!set.contains(tempStr)) { // 중복되는 수열인지 확인
-                set.add(tempStr);
-                sb.append(tempStr);
-            }
+            sb.append("\n");
             return;
         }
 
+        int temp = -1; // 마지막에 사용해봤던 숫자
         for (int i = 0; i < N; i++) {
-            if (!used[i]) {
-                arr[k] = i;
+            if (!used[i] && temp != input[i]) { 
+                // 마지막에 사용해봤던 숫자와 새로 사용해보려는 숫자가 같으면 중복되는 수열이 만들어지므로 pass
+                temp = input[i];
+                arr[k] = temp;
                 used[i] = true;
                 recursive(k + 1);
                 used[i] = false;
