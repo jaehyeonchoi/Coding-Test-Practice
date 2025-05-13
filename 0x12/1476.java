@@ -11,7 +11,7 @@ public class Main {
         S = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        long years = 1;
+        int years = 1;
         int e = 1;
         int s = 1;
         int m = 1;
