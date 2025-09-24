@@ -2,55 +2,71 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int[][] arr;
-    static boolean[][] vis;
+    private static int N, M;
+    private static int[][] arr;
+    private static int[] dx = {1, -1, 0, 0};
+    private static int[] dy = {0, 0, 1, -1};
+    private static boolean[][] visit;
 
     public static void main(String[] args) throws IOException {
+
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        arr = new int[n][m];
-        vis = new boolean[n][m];
+        arr = new int[N][M];
+        visit = new boolean[N][M];
+
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < M; j++) {
+                arr[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+
         Queue<Coor> queue = new LinkedList<>();
         int count = 0;
         int maxArea = 0;
 
-        for (int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < m; j++) {
-                arr[i][j] = Integer.parseInt(st.nextToken());
-                vis[i][j] = false;
-            }
-        }
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
                 Coor coor = new Coor(i, j);
 
-                if (coor.isNew()) { // 방문 안한 그림 발견하는 경우
-                    queue.add(coor);
-                    count++;
-                    int area = 0;
+                if (coor.isNew()) {
 
-                    while (!queue.isEmpty()) { // 전체 그림 탐색
-                        coor = queue.poll();
-                        if (!coor.isValid(n, m) || !coor.isNew()) {
+                    queue.add(coor);
+                    int currArea = 0;
+                    count++;
+
+                    while (!queue.isEmpty()) {
+
+                        Coor curr = queue.poll();
+                        int x = curr.x;
+                        int y = curr.y;
+
+                        if (!curr.isNew()) {
                             continue;
                         }
-                        vis[coor.x][coor.y] = true;
-                        area++;
+                        currArea++;
+                        visit[x][y] = true;
 
-                        queue.add(new Coor(coor.x - 1, coor.y));
-                        queue.add(new Coor(coor.x + 1, coor.y));
-                        queue.add(new Coor(coor.x, coor.y - 1));
-                        queue.add(new Coor(coor.x, coor.y + 1));
+                        for (int k = 0; k < 4; k++) {
+                            int nx = x + dx[k];
+                            int ny = y + dy[k];
+
+                            Coor newCoor = new Coor(nx, ny);
+
+                            if (newCoor.isValid() && newCoor.isNew()) {
+                                visit[nx][ny] = true;
+                                queue.add(newCoor);
+                            }
+                        }
+
                     }
-                    if (area > maxArea) {
-                        maxArea = area;
-                    }
+                    maxArea = Math.max(maxArea, currArea);
                 }
             }
         }
@@ -59,25 +75,27 @@ public class Main {
     }
 
     public static class Coor {
-        private final int x;
-        private final int y;
+
+        private int x;
+        private int y;
 
         public Coor(int x, int y) {
             this.x = x;
             this.y = y;
         }
-        public boolean isValid(int n, int m) {
-            if (x < 0 || x > n - 1) {
+
+        public boolean isValid() {
+            if (0 > x || x > N - 1) {
                 return false;
             }
-            if (y < 0 || y > m - 1) {
+            if (0 > y || y > M - 1) {
                 return false;
             }
             return true;
         }
 
         public boolean isNew() {
-            return arr[x][y] == 1 && !vis[x][y];
+            return arr[x][y] == 1 && !visit[x][y];
         }
     }
 }
