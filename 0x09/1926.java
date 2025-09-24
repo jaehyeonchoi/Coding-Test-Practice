@@ -38,6 +38,8 @@ public class Main {
                 if (coor.isNew()) {
 
                     queue.add(coor);
+                    visit[i][j] = true;
+
                     int currArea = 0;
                     count++;
 
@@ -47,11 +49,7 @@ public class Main {
                         int x = curr.x;
                         int y = curr.y;
 
-                        if (!curr.isNew()) {
-                            continue;
-                        }
                         currArea++;
-                        visit[x][y] = true;
 
                         for (int k = 0; k < 4; k++) {
                             int nx = x + dx[k];
@@ -76,8 +74,8 @@ public class Main {
 
     public static class Coor {
 
-        private int x;
-        private int y;
+        private final int x;
+        private final int y;
 
         public Coor(int x, int y) {
             this.x = x;
