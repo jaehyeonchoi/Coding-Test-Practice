@@ -20,6 +20,7 @@ public class Main {
         for (int i = 0; i < N; i++) {
             sum += arr[i] * (N - i);
         }
+        
         System.out.println(sum);
     }
 }
